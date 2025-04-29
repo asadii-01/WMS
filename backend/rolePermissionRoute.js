@@ -95,8 +95,9 @@ router.get("/:permission_id", (req, res) => {
   );
 });
 
-router.delete("/", (req, res) => {
-  const { role_id, permission_id } = req.body;
+router.delete("/:permission_id/:role_id", (req, res) => {
+  const role_id = req.params.role_id;
+  const permission_id = req.params.permission_id;
   db.query(
     "DELETE FROM role_permission WHERE role_id = ? AND permission_id = ?",
     [role_id, permission_id],
