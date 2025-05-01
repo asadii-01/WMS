@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+// Create a new route
 router.post("/", (req, res) => {
   const { route_name, optimized_path } = req.body;
   db.query(
@@ -24,6 +25,7 @@ router.post("/", (req, res) => {
   );
 });
 
+// Get all routes
 router.get("/", (req, res) => {
   db.query("SELECT * FROM route", (err, rows) => {
     if (err) {
@@ -36,6 +38,7 @@ router.get("/", (req, res) => {
   });
 });
 
+// Get total number of routes
 router.get("/total", (req, res) => {
   db.query("SELECT COUNT(*) AS total FROM route", (err, rows) => {
     if (err) {
@@ -48,6 +51,7 @@ router.get("/total", (req, res) => {
   });
 });
 
+// Get a route by id
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM route WHERE route_id = ?", [id], (err, rows) => {
@@ -66,6 +70,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
+// Update a route
 router.put("/:id", (req, res) => {
   const id = req.params.id;
   const { route_name, optimized_path } = req.body;
@@ -89,6 +94,7 @@ router.put("/:id", (req, res) => {
   );
 });
 
+// Delete a route
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM route WHERE route_id = ?", [id], (err, results) => {
@@ -108,3 +114,4 @@ router.delete("/:id", (req, res) => {
 });
 
 module.exports = router;
+

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require('../db');
 
+// Create a new wastebin
 router.post("/", (req, res) => {
   const { bin_location, bin_status, bin_capacity } = req.body;
   db.query(
@@ -24,6 +25,7 @@ router.post("/", (req, res) => {
   );
 });
 
+// Get all wastebins
 router.get("/", (req, res) => {
   db.query("SELECT * FROM wastebin", (err, rows) => {
     if (err) {
@@ -36,6 +38,7 @@ router.get("/", (req, res) => {
   });
 });
 
+// Get total number of wastebins
 router.get("/total", (req, res) => {
   db.query("SELECT COUNT(*) AS total FROM wastebin", (err, rows) => {
     if (err) {
@@ -48,7 +51,7 @@ router.get("/total", (req, res) => {
   });
 });
 
-
+// Get a wastebin by id
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM wastebin WHERE wastebin_id = ?", [id], (err, rows) => {
@@ -67,6 +70,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
+// Update a wastebin
 router.put("/:id", (req, res) => {
   const id = req.params.id;
   const { bin_location, bin_status, bin_capacity } = req.body;
@@ -90,6 +94,7 @@ router.put("/:id", (req, res) => {
   );
 });
 
+// Delete a wastebin
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM wastebin WHERE wastebin_id = ?", [id], (err, results) => {

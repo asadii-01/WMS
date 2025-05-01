@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../db');
 const queryAsync = require("../helper");
 
+//Create a new request;
 router.post("/", async (req, res) => {
   const { request_type, request_status, user_id, wastebin_id } = req.body;
 
@@ -36,7 +37,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-
+//Get all requests.
 router.get("/", (req, res) => {
   db.query("SELECT * FROM requests", (err, rows) => {
     if (err) {
@@ -49,6 +50,7 @@ router.get("/", (req, res) => {
   });
 });
 
+//Get the total number of requests.
 router.get("/total", (req, res) => {
   db.query("SELECT COUNT(*) AS total FROM requests", (err, rows) => {
     if (err) {
@@ -61,6 +63,7 @@ router.get("/total", (req, res) => {
   });
 });
 
+//Get the number of pending requests.
 router.get("/pending", (req, res) => {
   db.query(
     "SELECT COUNT(*) AS total FROM requests WHERE request_status = 'pending'",
@@ -76,6 +79,7 @@ router.get("/pending", (req, res) => {
   );
 });
 
+//Get a request by its ID.
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM requests WHERE request_id = ?", [id], (err, rows) => {
@@ -94,6 +98,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
+//Update a request.
 router.put("/:id", async (req, res) => {
   const id = req.params.id;
   const { request_type, request_status, user_id, wastebin_id } = req.body;
@@ -128,7 +133,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
+//Delete a request.
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM requests WHERE request_id = ?", [id], (err, results) => {
