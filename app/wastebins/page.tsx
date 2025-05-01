@@ -111,13 +111,11 @@ export default function WastebinsPage() {
 
         // Log the activity
         await logActivity({
-          user_id: user.id || 0,
-          action: isEditing ? "update_wastebin" : "create_wastebin",
-          entity_type: "wastebin",
-          entity_id: isEditing ? (currentId as number) : responseData.id,
-          details: `${
+          action: `${
             isEditing ? "Updated" : "Created"
           } waste bin at location: ${formData.bin_location}`,
+          timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          user_id: user.user_id,
         });
 
         toast({
@@ -162,16 +160,14 @@ export default function WastebinsPage() {
 
         if (response.ok) {
           // Get current user from localStorage
-          const user = JSON.parse(localStorage.getItem("user") || "{}")
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
 
           // Log the activity
           await logActivity({
-            user_id: user.id || 0,
-            action: "delete_wastebin",
-            entity_type: "wastebin",
-            entity_id: id,
-            details: `Deleted waste bin with ID: ${id}`,
-          })
+            action: `Deleted waste bin with ID: ${id}`,
+            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            user_id: user.user_id,
+          });
 
           toast({
             title: "Wastebin Deleted",

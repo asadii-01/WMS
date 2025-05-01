@@ -36,6 +36,19 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/total", (req, res) => {
+  db.query("SELECT COUNT(*) AS total FROM wastebin", (err, rows) => {
+    if (err) {
+      console.error("error running query: " + err.stack);
+      res.status(500).send({ message: "error running query" });
+      return;
+    }
+
+    res.json({ total: rows[0].total });
+  });
+});
+
+
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM wastebin WHERE wastebin_id = ?", [id], (err, rows) => {

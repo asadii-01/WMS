@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const db = require("../db");
 
 // Create a new garbage truck
 router.post("/", (req, res) => {
@@ -38,23 +38,40 @@ router.get("/", (req, res) => {
   });
 });
 
-// Get a garbage truck by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM garbagetruck WHERE truck_id = ?", [id], (err, rows) => {
+// Get total number of garbage trucks
+router.get("/total", (req, res) => {
+  db.query("SELECT COUNT(*) AS total FROM garbagetruck", (err, rows) => {
     if (err) {
       console.error("error running query: " + err.stack);
       res.status(500).send({ message: "error running query" });
       return;
     }
 
-    if (rows.length === 0) {
-      res.status(404).send({ message: "Garbage truck not found" });
-      return;
-    }
-
-    res.json(rows[0]);
+    res.json({ total: rows[0].total });
   });
+});
+
+// Get a garbage truck by id
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  db.query(
+    "SELECT * FROM garbagetruck WHERE truck_id = ?",
+    [id],
+    (err, rows) => {
+      if (err) {
+        console.error("error running query: " + err.stack);
+        res.status(500).send({ message: "error running query" });
+        return;
+      }
+
+      if (rows.length === 0) {
+        res.status(404).send({ message: "Garbage truck not found" });
+        return;
+      }
+
+      res.json(rows[0]);
+    }
+  );
 });
 
 // Update a garbage truck
@@ -84,20 +101,24 @@ router.put("/:id", (req, res) => {
 // Delete a garbage truck
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM garbagetruck WHERE truck_id = ?", [id], (err, results) => {
-    if (err) {
-      console.error("error running query: " + err.stack);
-      res.status(500).send({ message: "error running query" });
-      return;
-    }
+  db.query(
+    "DELETE FROM garbagetruck WHERE truck_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("error running query: " + err.stack);
+        res.status(500).send({ message: "error running query" });
+        return;
+      }
 
-    if (results.affectedRows === 0) {
-      res.status(404).send({ message: "Garbage truck not found" });
-      return;
-    }
+      if (results.affectedRows === 0) {
+        res.status(404).send({ message: "Garbage truck not found" });
+        return;
+      }
 
-    res.status(200).send({ message: "Garbage truck deleted successfully" });
-  });
+      res.status(200).send({ message: "Garbage truck deleted successfully" });
+    }
+  );
 });
 
 module.exports = router;

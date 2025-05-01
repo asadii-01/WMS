@@ -6,7 +6,7 @@ const db = require('../db');
 router.post("/", (req, res) => {
   const { action, timestamp, user_id } = req.body;
 
-  db.query("SELECT * FROM users WHERE log_id = ?", [user_id], (err, rows) => {
+  db.query("SELECT * FROM users WHERE user_id = ?", [user_id], (err, rows) => {
     if (err) {
       console.error("error running query: " + err.stack);
       res.status(500).send({ message: "error running query" });

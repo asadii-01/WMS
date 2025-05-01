@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const db = require('../db');
-const queryAsync = require('../helper')
+const db = require("../db");
+const queryAsync = require("../helper");
 
 // Create a new collection
 router.post("/", async (req, res) => {
@@ -10,7 +10,9 @@ router.post("/", async (req, res) => {
   try {
     // Check if schedule_id and route_id exist simultaneously
     const [scheduleRows, routeRows] = await Promise.all([
-      queryAsync("SELECT * FROM collectionschedule WHERE schedule_id = ?", [schedule_id]),
+      queryAsync("SELECT * FROM collectionschedule WHERE schedule_id = ?", [
+        schedule_id,
+      ]),
       queryAsync("SELECT * FROM route WHERE route_id = ?", [route_id]),
     ]);
 
@@ -39,7 +41,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-
 // Get all collections
 router.get("/", (req, res) => {
   db.query("SELECT * FROM collection", (err, rows) => {
@@ -53,23 +54,56 @@ router.get("/", (req, res) => {
   });
 });
 
-// Get a collection by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM collection WHERE collection_id = ?", [id], (err, rows) => {
+// Get total number of collections
+router.get("/total", (req, res) => {
+  db.query("SELECT COUNT(*) AS total FROM collection", (err, rows) => {
     if (err) {
       console.error("error running query: " + err.stack);
       res.status(500).send({ message: "error running query" });
       return;
     }
 
-    if (rows.length === 0) {
-      res.status(404).send({ message: "Collection not found" });
-      return;
-    }
-
-    res.json(rows[0]);
+    res.json({ total: rows[0].total });
   });
+});
+
+// Get total number of completed collections
+router.get("/completed", (req, res) => {
+  db.query(
+    "SELECT COUNT(*) AS total FROM collection WHERE completion_status = 'completed'",
+    (err, rows) => {
+      if (err) {
+        console.error("error running query: " + err.stack);
+        res.status(500).send({ message: "error running query" });
+        return;
+      }
+
+      res.json({ total: rows[0].total });
+    }
+  );
+});
+
+// Get a collection by id
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  db.query(
+    "SELECT * FROM collection WHERE collection_id = ?",
+    [id],
+    (err, rows) => {
+      if (err) {
+        console.error("error running query: " + err.stack);
+        res.status(500).send({ message: "error running query" });
+        return;
+      }
+
+      if (rows.length === 0) {
+        res.status(404).send({ message: "Collection not found" });
+        return;
+      }
+
+      res.json(rows[0]);
+    }
+  );
 });
 
 // Update a collection
@@ -80,7 +114,9 @@ router.put("/:id", async (req, res) => {
   try {
     // Check if schedule_id and route_id exist simultaneously
     const [scheduleRows, routeRows] = await Promise.all([
-      queryAsync("SELECT * FROM collectionschedule WHERE schedule_id = ?", [schedule_id]),
+      queryAsync("SELECT * FROM collectionschedule WHERE schedule_id = ?", [
+        schedule_id,
+      ]),
       queryAsync("SELECT * FROM route WHERE route_id = ?", [route_id]),
     ]);
 
@@ -109,25 +145,27 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
 // Delete a collection
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM collection WHERE collection_id = ?", [id], (err, results) => {
-    if (err) {
-      console.error("error running query: " + err.stack);
-      res.status(500).send({ message: "error running query" });
-      return;
-    }
+  db.query(
+    "DELETE FROM collection WHERE collection_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("error running query: " + err.stack);
+        res.status(500).send({ message: "error running query" });
+        return;
+      }
 
-    if (results.affectedRows === 0) {
-      res.status(404).send({ message: "Collection not found" });
-      return;
-    }
+      if (results.affectedRows === 0) {
+        res.status(404).send({ message: "Collection not found" });
+        return;
+      }
 
-    res.status(200).send({ message: "Collection deleted successfully" });
-  });
+      res.status(200).send({ message: "Collection deleted successfully" });
+    }
+  );
 });
 
 module.exports = router;
-

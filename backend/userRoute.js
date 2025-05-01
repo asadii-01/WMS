@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const db = require("../db");
 
 // Login route
 router.post("/login", (req, res) => {
@@ -27,7 +27,8 @@ router.post("/login", (req, res) => {
 
 // Register route
 router.post("/register", (req, res) => {
-  const { firstname, lastname, email, phone, address, usertype, password } = req.body;
+  const { firstname, lastname, email, phone, address, usertype, password } =
+    req.body;
   const username = `${firstname} ${lastname}`;
 
   db.query(
@@ -69,6 +70,31 @@ router.post("/register", (req, res) => {
   );
 });
 
+// Get all users
+router.get("/", (req, res) => {
+  db.query("SELECT * FROM users", (err, rows) => {
+    if (err) {
+      console.error("error running query: " + err.stack);
+      res.status(500).send({ message: "error running query" });
+      return;
+    }
+
+    res.json(rows);
+  });
+});
+
+// Get total number of users
+router.get("/total", (req, res) => {
+  db.query("SELECT COUNT(*) AS total FROM users", (err, rows) => {
+    if (err) {
+      console.error("error running query: " + err.stack);
+      res.status(500).send({ message: "error running query" });
+      return;
+    }
+
+    res.json({ total: rows[0].total });
+  });
+});
 
 // Get user by ID
 router.get("/:id", (req, res) => {
@@ -86,19 +112,6 @@ router.get("/:id", (req, res) => {
     }
 
     res.json(rows[0]);
-  });
-});
-
-// Get all users
-router.get("/", (req, res) => {
-  db.query("SELECT * FROM users", (err, rows) => {
-    if (err) {
-      console.error("error running query: " + err.stack);
-      res.status(500).send({ message: "error running query" });
-      return;
-    }
-
-    res.json(rows);
   });
 });
 

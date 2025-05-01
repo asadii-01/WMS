@@ -55,28 +55,26 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         // Fetch all data in parallel
-        const [wastebins, requests, collections, trucks, users, routes] = await Promise.all([
-          wastebinsAPI.getAll(),
-          requestsAPI.getAll(),
-          collectionsAPI.getAll(),
-          trucksAPI.getAll(),
-          usersAPI.getAll(),
-          routesAPI.getAll(),
+        const [wastebins, requests,pRequests, collections, cCollections, trucks, users, routes] = await Promise.all([
+          wastebinsAPI.getTotal(),
+          requestsAPI.getTotal(),
+          requestsAPI.getPending(),
+          collectionsAPI.getTotal(),
+          collectionsAPI.getCompleted(),
+          trucksAPI.getTotal(),
+          usersAPI.getTotal(),
+          routesAPI.getTotal(),
         ])
 
-        // Calculate stats
-        const pendingRequests = requests.filter((req: any) => req.request_status === "pending").length
-        const completedCollections = collections.filter((col: any) => col.completion_status === "completed").length
-
         setStats({
-          totalWastebins: wastebins.length,
-          totalRequests: requests.length,
-          totalCollections: collections.length,
-          totalTrucks: trucks.length,
-          totalUsers: users.length,
-          totalRoutes: routes.length,
-          pendingRequests,
-          completedCollections,
+          totalWastebins: wastebins.total,
+          totalRequests: requests.total,
+          totalCollections: collections.total,
+          totalTrucks: trucks.total,
+          totalUsers: users.total,
+          totalRoutes: routes.total,
+          pendingRequests: pRequests.total,
+          completedCollections: cCollections.total,
         })
       } catch (error) {
         console.error("Error fetching dashboard stats:", error)
@@ -236,21 +234,21 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <StatCard
                 title="Today's Collections"
-                value={0}
+                value={10}
                 icon={<Calendar className="h-6 w-6 text-blue-600" />}
                 description="Collections scheduled for today"
               />
 
               <StatCard
                 title="Assigned Requests"
-                value={0}
+                value={5}
                 icon={<Map className="h-6 w-6 text-purple-600" />}
                 description="Routes assigned to you"
               />
 
               <StatCard
                 title="Completed Today"
-                value={0}
+                value={2}
                 icon={<CheckCircle className="h-6 w-6 text-green-600" />}
                 description="Requests completed today"
               />

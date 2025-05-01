@@ -1,5 +1,7 @@
 // API utility functions to interact with the backend
 
+import { get } from "http"
+
 // Base URL for API requests
 const API_BASE_URL = "/api/proxy"
 
@@ -44,6 +46,7 @@ export const authAPI = {
 // Users API
 export const usersAPI = {
   getAll: () => fetchAPI("users"),
+  getTotal: () => fetchAPI("users/total"),
   getById: (id: number) => fetchAPI(`users/${id}`),
   create: (userData: any) =>
     fetchAPI("users/register", {
@@ -84,6 +87,7 @@ export const rolesAPI = {
 // Wastebins API
 export const wastebinsAPI = {
   getAll: () => fetchAPI("wastebin"),
+  getTotal: () => fetchAPI("wastebin/total"),
   getById: (id: number) => fetchAPI(`wastebin/${id}`),
   create: (binData: any) =>
     fetchAPI("wastebin", {
@@ -104,6 +108,8 @@ export const wastebinsAPI = {
 // Requests API
 export const requestsAPI = {
   getAll: () => fetchAPI("requests"),
+  getTotal: () => fetchAPI("requests/total"),
+  getPending: () => fetchAPI("requests/pending"),
   getById: (id: number) => fetchAPI(`requests/${id}`),
   create: (requestData: any) =>
     fetchAPI("requests", {
@@ -144,6 +150,8 @@ export const schedulesAPI = {
 // Collections API
 export const collectionsAPI = {
   getAll: () => fetchAPI("collection"),
+  getTotal: () => fetchAPI("collection/total"),
+  getCompleted: () => fetchAPI("collection/completed"),
   getById: (id: number) => fetchAPI(`collection/${id}`),
   create: (collectionData: any) =>
     fetchAPI("collection", {
@@ -164,6 +172,7 @@ export const collectionsAPI = {
 // Garbage Trucks API
 export const trucksAPI = {
   getAll: () => fetchAPI("garbageTruck"),
+  getTotal: () => fetchAPI("garbageTruck/total"),
   getById: (id: number) => fetchAPI(`garbageTruck/${id}`),
   create: (truckData: any) =>
     fetchAPI("garbageTruck", {
@@ -184,6 +193,7 @@ export const trucksAPI = {
 // Routes API
 export const routesAPI = {
   getAll: () => fetchAPI("route"),
+  getTotal: () => fetchAPI("route/total"),
   getById: (id: number) => fetchAPI(`route/${id}`),
   create: (routeData: any) =>
     fetchAPI("route", {

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const db = require("../db");
 
 router.post("/", (req, res) => {
   const { route_name, optimized_path } = req.body;
@@ -33,6 +33,18 @@ router.get("/", (req, res) => {
     }
 
     res.json(rows);
+  });
+});
+
+router.get("/total", (req, res) => {
+  db.query("SELECT COUNT(*) AS total FROM route", (err, rows) => {
+    if (err) {
+      console.error("error running query: " + err.stack);
+      res.status(500).send({ message: "error running query" });
+      return;
+    }
+
+    res.json({ total: rows[0].total });
   });
 });
 
